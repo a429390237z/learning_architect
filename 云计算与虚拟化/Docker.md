@@ -96,3 +96,11 @@ $ docker run -p 80:80 --name mynginx nginx
 </pre>
 
 docker通过NAT映射模式访问网络，会影响性能。<br/>
+
+**docker数据管理**<br/>
+1. 数据卷<br/>
+  - -v /data<br/>
+  - -v src:dst<br/>
+2. 数据卷容器
+  - --volumes-from<br/>
+ 
