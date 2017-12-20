@@ -26,6 +26,8 @@ $ docker ps -a
 $ docker run --name mydocker -t -i centos /bin/bash
 // 启动之前开启过的docker
 $ docker start mydocker
+// 停止docker容器
+$ docker stop mydocker
 // 进入docker,docker提供，单用户模式，生产环境一般不用，生产环境用nsenter。
 $ docker attach mydocker
 // 安装提供nsenter命令的包，要是有则不用安装
@@ -57,3 +59,40 @@ $ docker rm mydocker
 // 启动容器执行完命令后删除
 $ docker run --rm centos /bin/echo "hehe"
 </pre>
+
+docker使用优点：<br/>
+1. simplifying Configuration
+2. code Pipeline Management
+3. Developer Productivity
+4. app Isolation
+5. Server Consolidation
+6. Debugging Capabilities
+7. Multi-tenancy
+8. Rapid Deployment
+
+面向产品：产品交付<br/>
+面向开发：简化环境配置<br/>
+面向测试：多版本测试<br/>
+面向运维：环境一致性<br/>
+面向架构：自动化扩容(微服务)<br/>
+
+**docker网络**<br/>
+端口映射：<br/>
+1. 随机映射<br/>
+   - docker run -P<br/>
+2. 指定映射<br/>
+   - -p hostPort:containerPort<br/>
+   - -p ip:hostPort:containerPort<br/>
+   - -p ip::containerPort<br/>
+   - -p hostPort:containerPort:udp<br/>
+   - -p 81:80 -p 443:443<br/>
+<pre>
+// 端口随机映射
+$ docker run -P --name mynginx nginx
+// 查看NAT情况
+$ iptables -t nat -vnL
+// 指定端口映射
+$ docker run -p 80:80 --name mynginx nginx
+</pre>
+
+docker通过NAT映射模式访问网络，会影响性能。<br/>
