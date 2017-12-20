@@ -1,6 +1,6 @@
 #Docker#
 ##Docker的安装使用##
-docker基于内核虚拟化技术，遵循基础设施不可变原则。
+docker基于内核虚拟化技术，遵循基础设施不可变原则。docker里面运行的程序只能以前台进程的方式运行。
 <pre>
 // docker的安装
 $ yum install -y docker
