@@ -185,3 +185,12 @@ Dockerfile主要配置：<br/>
 - ENTRYPOINT （指定容器启动后要干的事情，不可被覆盖）
 Dockerfile参考：
 [https://docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/ "Dockerfile reference")
+
+Docker Registry私有仓库 Nginx+认证的方式：</br>
+1. 申请免费的SSL证书: [https://buy.wosign.com/free/](https://buy.wosign.com/free/)<br/>
+2. 参照部署指南进行证书部署<br/>
+3. 设置验证<br/>
+
+==============================harbor仓库=====================================<br/>
+http://vmware.github.io/harbor/index_cn.html<br/>
+https://github.com/vmware/harbor<br/>
