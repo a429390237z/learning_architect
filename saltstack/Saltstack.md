@@ -1,4 +1,5 @@
-Saltstack 是用Python写的，提供API接入。
+Saltstack 是用Python写的，提供API接入。<br/>
+salt参考：[https://www.unixhot.com/docs/saltstack](https://www.unixhot.com/docs/saltstack)
 
 三大功能：远程执行</br>
           配置管理(状态)</br>
@@ -16,6 +17,17 @@ ansible：使用Python编写。
 
 远程仓库：[http://repo.saltstack.com/](http://repo.saltstack.com/)
 
+
+salt防火墙配置：<br/>
+<pre>
+# Allow Minions from these networks
+-I INPUT -s 10.1.2.0/24 -p tcp -m multiport --dports 4505,4506 -j ACCEPT
+-I INPUT -s 10.1.3.0/24 -p tcp -m multiport --dports 4505,4506 -j ACCEPT
+# Allow Salt to communicate with Master on the loopback interface
+-A INPUT -i lo -p tcp -m multiport --dports 4505,4506 -j ACCEPT
+# Reject everything else
+-A INPUT -p tcp -m multiport --dports 4505,4506 -j REJECT
+</pre>
 
 作用：
 
@@ -152,4 +164,180 @@ Grains优先级：
 
 ### Pillar ###
 
-pillar是动态的，给特定的minion指定特定的数据，只有指定的minion自己能看到自己的数据。
+pillar是动态的，给特定的minion指定特定的数据，只有指定的minion自己能看到自己的数据。类似于top file。<br/>
+
+1 . 写pillar sls文件(jinjia2),/srv/pillar/web/apache.sls
+<pre>
+hehe:
+  {% if grains['os'] == 'CentOS' %}
+  apache: httpd
+  {% elif grains['os'] == 'Debian' %}
+  apache: apache2
+  {% endif %}
+</pre>
+2 . 写top file。(top.sls)
+
+
+pillar使用场景：<br/>
+
+1.目标选择<br/>
+Grains VS Pillar<br/>
+<pre>
+           类型        数据采集方式        应用场景
+Grains     静态        minion启动时收集    数据查询，目标选择，配置管理
+Pillar     动态        master自定义        目标选择，配置管理，敏感数据
+</pre>
+
+
+##深入学习saltstack远程执行##
+<pre>
+salt '*' cmd.run 'w'
+</pre>
+
+命令：salt<br/>
+目标：'*'<br/>
+模块：cmd.run 自带150+模块，可自定义模块<br/>
+返回：执行后结果返回。Returnners<br/>
+
+*目标：Targeting*
+
+两种：一种和minion ID有关,一种和minion ID无关。<br/>
+所有匹配目标的方式，都可以用到top file里面来指定目标<br/>
+
+1.minion ID有关的方法：<br/>
+<pre>
+    1.minion ID
+    2.通配符
+    3.列表方式，指定 -L参数，逗号分隔
+    4.正则表达式。指定 -E参数
+</pre>
+
+2.minion ID无关的方法：<br/>
+<pre>
+    1.子网、IP地址
+</pre>
+
+**匹配方式总结**
+<pre>
+Letter       Type              Example
+G            Grains glob       G@os:Ubuntu
+E            PCRE Minion ID    E@web\d+\.(dev|qa|prod)\.Ioc
+P            Grains PCRE       P@os:(RedHat|Fedora|CentOS)
+L            List of minion    L@node1,node2,node3
+I            Pillar glob       I@pdata:foobar
+J            Pillar PCRE       J@pdata:(foo|bar)$
+S            Subnet/IP address S@192.168.1.0/24 or S@192.100.1.12
+R            Range cluster     R@foo,bar
+C            Mix
+N            group               
+</pre>
+
+主机名设置方案:<br/>
+<pre>
+1. IP地址
+2. 根据业务来进行设置，如redis-node1-redis04-idc04.soa.example.com
+   redis-node1：redis第一个节点
+   redis04：集群
+   idc04：机房
+   soa：业务线
+</pre>
+      
+
+**配置RETURNER**
+1.执行salt后的命令不仅可以在master端显示，还可以通过 --return后面指定的参数，返回给对应的接收端。如：<br/>
+<pre>
+//不仅将salt执行命令后的结果显示在终端上，还将结果保存至mysql数据库
+salt '*' test.ping --return mysql
+</pre>
+mysql数据库的配置：
+
+1. 安装mysql数据库，minion端需要安装MySQL-python.
+2. 建库.
+<pre>
+CREATE DATABASE  `salt`
+  DEFAULT CHARACTER SET utf8
+  DEFAULT COLLATE utf8_general_ci;
+
+USE `salt`;
+
+--
+-- Table structure for table `jids`
+--
+
+DROP TABLE IF EXISTS `jids`;
+CREATE TABLE `jids` (
+  `jid` varchar(255) NOT NULL,
+  `load` mediumtext NOT NULL,
+  UNIQUE KEY `jid` (`jid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE INDEX jid ON jids(jid) USING BTREE;
+
+--
+-- Table structure for table `salt_returns`
+--
+
+DROP TABLE IF EXISTS `salt_returns`;
+CREATE TABLE `salt_returns` (
+  `fun` varchar(50) NOT NULL,
+  `jid` varchar(255) NOT NULL,
+  `return` mediumtext NOT NULL,
+  `id` varchar(255) NOT NULL,
+  `success` varchar(10) NOT NULL,
+  `full_ret` mediumtext NOT NULL,
+  `alter_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY `id` (`id`),
+  KEY `jid` (`jid`),
+  KEY `fun` (`fun`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `salt_events`
+--
+
+DROP TABLE IF EXISTS `salt_events`;
+CREATE TABLE `salt_events` (
+`id` BIGINT NOT NULL AUTO_INCREMENT,
+`tag` varchar(255) NOT NULL,
+`data` mediumtext NOT NULL,
+`alter_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+`master_id` varchar(255) NOT NULL,
+PRIMARY KEY (`id`),
+KEY `tag` (`tag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</pre>
+3 . 创建用户，并授权
+<pre>
+grant ALL on salt.* to 'salt'@'%' identified by '@Wang1234';
+flush privileges;
+</pre>
+4 .分别在minion的配置文件中添加如下配置：<br/>
+<pre>
+mysql.host: '10.0.0.4'
+mysql.user: 'salt'
+mysql.pass: '@Wang1234'
+mysql.db: 'salt'
+mysql.port: 3306
+</pre>
+5 .重启minion，master端执行salt命令<br/>
+<pre>
+systemctl restart salt-minion
+salt '*' test.ping --return mysql
+</pre>
+6 .数据库中出现数据
+![](https://i.imgur.com/pvZG9AO.png) 
+
+**自定义模块**
+
+1. 在master配置文件中开启 /srv/salt.
+2. 创建/srv/salt/_modules目录，在目录中创建my_disk.py
+<pre>
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+def list():
+   cmd = 'df -h'
+   ret = __salt__['cmd.run'](cmd)
+   return ret
+</pre>
+3 .刷新，salt '*' saltutil.sync_modules,实际上是将py文件同步到minion端的/var/cache/salt/minion/extmods/modules下。<br/>
+4 .执行salt '*' my_disk.list
