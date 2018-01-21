@@ -40,7 +40,7 @@ salt防火墙配置：<br/>
    2. 冒号(冒号处理键值对的时候，需要有一个空格)
    3. 短横线(后面有一个空格)
 
-安装：
+安装：要是重装salt时，一定要记得清除缓存，master key缓存：/etc/salt/pki/master/，minion key缓存：/etc/salt/pki/minion/
 
 <pre>
 //master端：

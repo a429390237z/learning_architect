@@ -193,6 +193,6 @@ Pillar:  {{ pillar['hehe']['apache'] }}
   PORT: 88
 </pre>
 
-所有的minion出去的pillar中item rsyslog的值是server的minion
+所有的minion出去的pillar中item rsyslog的值是server的minion<br/>
 
 参考salt配置：[https://github.com/saltstack-formulas](https://github.com/saltstack-formulas)
