@@ -24,3 +24,8 @@
 
 1. unless: 如果unless后面的命令返回为True，那么就不执行。
 2. onlyif
+
+haproxy下载地址：<br/>
+[http://download.chinaunix.net/download/0013000/12508.shtml](http://download.chinaunix.net/download/0013000/12508.shtml)
+
+默认salt状态执行时，只执行base环境，要执行其它环境需要制定saltenv='prod'<br/>
