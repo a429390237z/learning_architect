@@ -1,6 +1,19 @@
 #Docker#
 ##Docker的安装使用##
-docker基于内核虚拟化技术，遵循基础设施不可变原则。docker里面运行的程序只能以前台进程的方式运行。
+docker基于内核虚拟化技术，遵循基础设施不可变原则。docker里面运行的程序只能以前台进程的方式运行。<br/>
+
+Docker的安装可以指定docker源:<br/>
+<pre>
+$ cat /etc/yum.repos.d/docker.repo<<-EOF
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/7
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+</pre>
+
 <pre>
 // docker的安装
 $ yum install -y docker
