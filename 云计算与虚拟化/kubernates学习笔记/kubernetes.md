@@ -50,7 +50,72 @@ OPTIONS='--selinux-enabled=false --insecure-registry gcr.io'
 # systemctl start kube-proxy
 </pre>
 
+Kubernetes安装选项：<br/>
+本地开发环境:<br/>
+Minikube安装(https://kubernetes.io/docs/getting-started-guides/minikube/)<br/>
+Kubernetes集群：<br/>
+1.Kubeadm(https://kubernetes.io/docs/setup/independent/install-kubeadm/）<br/>
+2.使用IBM Clound Private Ce版本安装(https://hub.docker.com/r/ibmcom/cfc-installer/)<br/>
+3.选择Bluemix,AWS,GCE,阿里，腾讯云等云的服务.<br/>
+
+kubernetes参考学习：<br/>
+About OCI：<br/>
+[https://www.opencontainers.org](https://www.opencontainers.org)<br/>
+runc on github:<br/>
+[https://github.com/opencontainers/runc](https://github.com/opencontainers/runc)<br/>
+OCI testing:<br/>
+[https://github.com/opencontainers/runtime-tools](https://github.com/opencontainers/runtime-tools)<br/>
+ContainerD:<br/>
+[https://github.com/containerd/containerd](https://github.com/containerd/containerd)<br/>
+CRI-O:<br/>
+[http://cri-o.io](http://cri-o.io)<br/>
+[https://github. com/kubernetes-incubator/cri-o](https://github.com/kubernetes-incubator/cri-o)
+
+##kubernetes网络##
+1.calico<br/>
+2.NSX-t<br/>
+3.flannel<br/>
+外网访问：<br/>
+1.nodePort<br/>
+2.loadbalancer<br/>
+3.Ingress
+
+##kubernetes存储##
+###K8s存储的主要应用场景###
+1.应用程序/服务存储状态、数据提取等<br/>
+2.应用程序/服务配置文件读取、秘钥配置等<br/>
+3.不同应用程序间或者应用程序内进程间共享数据<br/>
+
+##kubernetes日志和监控##
+###日志的分类###
+1.K8S的日志<br/>
+2.K8S Cluster里面部署的应用程序的日志<br/>
+
+分析处理:<br/>
+常见的方案比如ElasticSearch + LogStash + Kibana的方案
+
+容器当中的日志怎么收集:<br/>
+1.让每个应用自行上传自己的日志<br/>
+2.附加专用日志上传容器(side-car模式）<br/>
+  1).在每一个pod中包含一个日志上传容器<br/>
+  2).应用容器和日志容器通过共享卷交换日志数据<br/>
+3.使用Docker引擎的日志收集功能<br/>
+  1).利用Docker Log Driver收集每个容器的标准输出<br/>
+  2).容器的标准输出会被写到宿主机的日志目录<br/>
+  3).日志上传容器从宿主机的日志目录上传日志<br/>
+  4).将整套日志收集系统从用户应用中分离出来<br/>
+
+[https://docs.docker.com/engine/admin/logging/overview/#supported-logging-drivers](https://docs.docker.com/engine/admin/logging/overview/#supported-logging-drivers)
+
+###kubernetes监控###
+专用的容器级别的监控方案：cAdvisor/Heapster<br/>
+常用的方案：<br/>
+1.heapster + influxDB + Grafana(google有现成的部署实例)<br/>
+2.heapster + prometheus + Grafana<br/>
 
 
-
-
+##kubernetes应用部署##
+###Helm架构###
+1.Helm
+2.Tiller
+3.Chart package/repository

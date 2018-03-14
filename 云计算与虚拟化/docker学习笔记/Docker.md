@@ -134,6 +134,21 @@ $ docker run -it --name volume-test3 --volumes-from nginx-volume-test2 centos /b
 </pre>
  
 
+###docker网络###
+--基于link的互联--
+<pre>
+//容器默认支持互相联通，使用--icc=false隔离容器
+docker run --rm=true --link=mysqlserver:myserver -it java /bin/bash
+</pre>
+
+--直接使用宿主机的网络--
+<pre>
+docker run --rm=true --net=host --name=mysqlserver -e MYSQL_ROOT_PASSWORD=123456 mysql
+</pre>
+--容器共用一个IP网络--
+<pre>
+docker run --rm=true --net=container:mysqlserver java ip addr
+</pre>
 ##镜像构建##
 干掉所有正在运行的容器：<br/>
 <pre>
