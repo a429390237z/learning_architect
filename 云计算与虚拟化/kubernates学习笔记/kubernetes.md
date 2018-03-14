@@ -50,6 +50,9 @@ OPTIONS='--selinux-enabled=false --insecure-registry gcr.io'
 # systemctl start kube-proxy
 </pre>
 
+##kubernetes一站式管理平台ku8 eye##
+地址：https://github.com/bestcloud/ku8eye
+
 Kubernetes安装选项：<br/>
 本地开发环境:<br/>
 Minikube安装(https://kubernetes.io/docs/getting-started-guides/minikube/)<br/>

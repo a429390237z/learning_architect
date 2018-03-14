@@ -222,3 +222,34 @@ Docker Registry私有仓库 Nginx+认证的方式：</br>
 ==============================harbor仓库=====================================<br/>
 http://vmware.github.io/harbor/index_cn.html<br/>
 https://github.com/vmware/harbor<br/>
+
+##Docker 网络##
+
+###Docker + OVS实战###
+需要在两台机器上操作，同时安装docker,以下为一个机器操作，另一个相似：<br/>
+<bre>
+//关闭selinux
+# vi /etc/selinux/config
+SELINUX=disabled
+//下载安装并启动OVS
+# wget http://downloads.naulinux.ru/pub/NauLinux/7x/x86_64/Extras/RPMS/Projects/OpenFlow/openvswitch-2.5.0-2.el7.x86_64.rpm
+# yum localinstall openvswitch-2.5.0-2.el7.x86_64.rpm
+# systemctl start openvsitch
+// 更改默认docker0绑定的IP地址并重启docker
+# vim /usr/lib/systemd/system/docker.service
+ExecStart= --bip=172.18.0.1/16
+# systemctl daemon-reload
+//创建ovs网桥br0
+# ovs-vsctl add-br br0
+//创建gre接口
+# ovs-vsctl add-port br0 gre1 -- set interface gre1 type=gre option:remote_ip=192.168.0.5
+//添加br0到本地docker0，使得容器流量通过ovs流经tunnel
+# brctl addif docker0 br0
+//启动br0和docker0
+# ip link set dev br0 up
+# ip link set dev docker0 up
+//清空防火墙规则
+# iptables -t nat -F;iptables -F
+//添加路由信息
+# ip route add 172.17.0.0/16 dev docker0
+</bre>
