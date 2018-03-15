@@ -122,3 +122,28 @@ CRI-O:<br/>
 1.Helm
 2.Tiller
 3.Chart package/repository
+
+##kubernetes catlog##
+catlog service
+
+##kubernetes 实战##
+
+某银行架构：
+Terraform<br/>
+Application Catalog、Orchestration helm、ingress controller<br/>
+Service Mesh:spring cloud、istio<br/>
+Log Analytics: elk<br/>
+Metrics: prometheus、grafana、collectd、cAdvisor、Heapster、InfluxDB<br/>
+Messaging: kafka<br/>
+Security: keystone<br/>
+Repos: harbor<br/>
+
+PaaS云方案特点：<br/>
+1.安装升级: 通过容器管理所有的PaaS云系统服务，便于安装，升级。<br/>
+2.弹性伸缩：基于时间（Scheduler Resource)。<br/>
+3.多集群管理：可以实现多集群应用部署和跨集群负载均衡。<br/>
+4.DevOps：通过集成Jenkins实现了DevOps的功能，包括代码托管，镜像自动编译，应用自动部署，自动产生DevOps分析报告的功能。<br/>
+5.微服务治理：通过istio实现了微服务治理的功能，主要包括分流，限流，熔断，服务发现，服务跟踪，服务拓扑结构展示等功能。<br/>
+6.外部服务集成：通过service catlog实现了和外部应用对接的能力。例如ICP可以通过service catlog对接外部的一些数据库服务，第三方PaaS平台上的一些服务等等。<br/>
+7.多云集成：通过集成Terraform实现了对不同云平台的集成。<br/>
+
